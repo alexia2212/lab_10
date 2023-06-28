@@ -35,49 +35,11 @@
 
 </style>
 
-<script>
-    document.getElementById('loadImagesButton').addEventListener('click', loadImages);
-
-    function loadImages() {
-        var filesInput = document.getElementById('inputFile');
-        var files = filesInput.files;
-
-        if (files.length !== 6) {
-            alert('Debes seleccionar exactamente 6 imágenes.');
-            return;
-        }
-
-        var gameBoard = document.getElementById('gameBoard');
-        gameBoard.innerHTML = '';
-
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-
-            if (!file.type.match('image/png')) {
-                alert('Debes seleccionar imágenes en formato PNG.');
-                return;
-            }
-
-            var reader = new FileReader();
-            reader.onload = (function (aFile) {
-                return function (e) {
-                    var img = document.createElement('img');
-                    img.classList.add('card');
-                    img.src = e.target.result;
-                    gameBoard.appendChild(img);
-                };
-            })(file);
-
-            reader.readAsDataURL(file);
-        }
-    }
-
-</script>
-
 
 <script>
 
     document.getElementById('loadImagesButton').addEventListener('click', loadImages);
+
 
     function loadImages() {
         var filesInput = document.getElementById('inputFile');
@@ -85,15 +47,12 @@
         var imageContainer = document.getElementById('imageContainer');
         var imageCount = document.getElementById('imageCount');
 
-        if (imageCount.textContent >= 15) {
-            alert('Solo se aceptan 15 imágenes');
-            return;
-        }
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
 
-            if (!file.type.match('image.*')) {
+            if (!file.type.match('image.*') && files.length <=15) {
+                alert('Solo se aceptan 15 imágenes');
                 continue;
             }
 
@@ -120,6 +79,7 @@
                     imageCount.textContent = parseInt(imageCount.textContent) + 1;
                 };
             })(file);
+
 
             reader.readAsDataURL(file);
         }
