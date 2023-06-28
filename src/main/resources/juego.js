@@ -120,7 +120,6 @@ startButton.addEventListener("click", () => {
     movesCount = 0;
     seconds = 0;
     minutes = 0;
-    //controls amd buttons visibility
     controls.classList.add("hide");
     stopButton.classList.remove("hide");
     startButton.classList.add("hide");
