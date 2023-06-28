@@ -12,7 +12,7 @@
 <h5>Total de imágenes seleccionadas: <span id="imageCount">0</span></h5>
 
 <form id="myForm">
-    <input type="file" id="myFile" name="myFile">
+    <input type="file" id="myFile" name="myFile" accept="image/png">
     <button type="submit" class="btn btn-success">Subir imagen</button>
 </form>
 
@@ -25,10 +25,15 @@
         var fileInput = document.getElementById('myFile');
         var file = fileInput.files[0];
 
+        if (!file || file.type !== 'image/png') {
+            console.error('Se aceptan solo archivos png.');
+            return;
+        }
+
         var formData = new FormData();
         formData.append('image', file);
 
-        fetch('', {
+        fetch('/http://localhost:8080', {
             method: 'POST',
             body: formData
         })
@@ -49,6 +54,7 @@
                 imageContainer.appendChild(img);
                 imageContainer.appendChild(closeBtn);
 
+                // Incrementar el contador de imágenes
                 var imageCount = document.getElementById('imageCount');
                 imageCount.textContent = parseInt(imageCount.textContent) + 1;
 
