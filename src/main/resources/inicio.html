@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Juego de la memoria</title>
+</head>
+<body>
+
+
+
+    <form id="myForm">
+        <input type="file" id="myFile" name="myFile">
+        <button type="submit">Subir imagen</button>
+    </form>
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita el envío del formulario por defecto
+
+            var fileInput = document.getElementById('myFile');
+            var file = fileInput.files[0]; // Obtiene el archivo seleccionado
+
+            var formData = new FormData();
+            formData.append('image', file); // Agrega el archivo a un objeto FormData
+
+// Aquí puedes realizar una solicitud HTTP utilizando AJAX, Fetch API o cualquier otra biblioteca para enviar el formulario y la imagen al servidor
+// Por ejemplo, utilizando Fetch API:
+            fetch('/ruta-de-tu-servidor', {
+                method: 'POST',
+                body: formData
+            })
+                .then(function(response) {
+// Manejar la respuesta del servidor después de subir la imagen
+                    console.log('Imagen subida exitosamente');
+                })
+                .catch(function(error) {
+// Manejar cualquier error que ocurra durante la subida de la imagen
+                    console.error('Error al subir la imagen', error);
+                });
+        });
+
+    </script>
+
+
+</body>
+</html>
+
+
