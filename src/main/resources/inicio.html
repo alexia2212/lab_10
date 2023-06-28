@@ -9,12 +9,17 @@
 
     <h1>El Juego de la Memoria</h1>
 
-    <h2>Total de imágenes seleccionadas</h2>
+    <h2>Total de imágenes seleccionadas: </h2>
 
 
     <form id="myForm">
-        <input type="file" id="myFile" name="myFile">
-        <button type="submit" class="btn btn-success">Subir imagen</button>
+        <div>
+            <input type="file" id="myFile" name="myFile">
+
+        </div>
+        <br>
+
+        <button type="submit" class="btn btn-success">Agregar imagenes</button>
     </form>
 
     <script>
@@ -27,8 +32,7 @@
             var formData = new FormData();
             formData.append('image', file); // Agrega el archivo a un objeto FormData
 
-// Aquí puedes realizar una solicitud HTTP utilizando AJAX, Fetch API o cualquier otra biblioteca para enviar el formulario y la imagen al servidor
-// Por ejemplo, utilizando Fetch API:
+
             fetch('/ruta-de-tu-servidor', {
                 method: 'POST',
                 body: formData
