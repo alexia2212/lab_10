@@ -137,3 +137,18 @@ const initializer = () => {
     console.log(cardValues);
     matrixGenerator(cardValues);
 };
+
+$('#Aleatorizar').click(function (){
+    let arreglo=[[playerCh1,$('#haveColor1').css("background-color")],[playerCh2,$('#haveColor2').css("background-color")],[playerCh3,$('#haveColor3').css("background-color")],[playerCh4,$('#haveColor4').css("background-color")],[playerCh5,$('#haveColor5').css("background-color")]];
+    arreglo.sort(function() { return Math.random() - 0.5 });
+    for(let i=0;i<participantes;i++){
+        document.querySelector('#perso'+(i+1)).src=arreglo[i][0];
+        $('#linea'+(i+1)+' td').css("background-color", arreglo[i][1]);
+        $('.inicio'+(i+1)+'').css("background-color", "rgba(33,37,41)");
+    }
+    playerCh1= arreglo[0][0];
+    playerCh2= arreglo[1][0];
+    playerCh3= arreglo[2][0];
+    playerCh4= arreglo[3][0];
+    playerCh5= arreglo[4][0];
+});
