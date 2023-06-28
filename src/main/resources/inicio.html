@@ -17,6 +17,8 @@
 <div id="imageContainer">
     <div id="gameBoard"></div>
 </div>
+<button onclick="generarCuadro()">Agregar Tablero</button>
+<div id="container"></div>
 
 
 
@@ -32,9 +34,50 @@
          margin: 5px;
          background-color: gray;
      }
+    .block {
+
+        background-color: #49BCD4;
+        border: 1px solid black;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
 
 </style>
+<script>
+    function generarCuadro() {
+        var imagenes = document.getElementById('imageContainer').getElementsByTagName('img');
+        var numImagenes = imagenes.length;
 
+        var numCols = 3; // Número de columnas deseado
+        var numRows = Math.ceil(numImagenes / numCols); // Calcular el número de filas
+
+        var container = document.getElementById('container');
+        container.innerHTML = ''; // Limpiar el contenido actual
+
+        for (var i = 0; i < numRows; i++) {
+            var row = document.createElement('div');
+            row.className = 'row';
+
+            for (var j = 0; j < numCols; j++) {
+                var imgIndex = i * numCols + j;
+                if (imgIndex < numImagenes) {
+                    var img = imagenes[imgIndex].cloneNode(true);
+                    var block = document.createElement('div');
+                    block.style.backgroundImage = img;
+                    block.style.backgroundSize = "190px 200px";
+                    block.className = 'block';
+                    block.appendChild(img);
+                    row.appendChild(block);
+                }
+            }
+
+            container.appendChild(row);
+        }
+    }
+</script>
+</script>
 <script>
     document.getElementById('loadImagesButton').addEventListener('click', loadImages);
 
