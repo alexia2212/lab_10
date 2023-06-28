@@ -38,8 +38,8 @@
 
         background-color: #49BCD4;
         border: 1px solid black;
-        width: 200px;
-        height: 200px;
+        width: 250px;
+        height: 250px;
         margin-bottom: 20px;
         display: inline-block;
     }
@@ -56,6 +56,25 @@
         var container = document.getElementById('container');
         container.innerHTML = ''; // Limpiar el contenido actual
 
+        for (var i = 0; i < numRows; i++) {
+            var row = document.createElement('div');
+            row.className = 'row';
+
+            for (var j = 0; j < numCols; j++) {
+                var imgIndex = i * numCols + j;
+                if (imgIndex < numImagenes) {
+                    var img = imagenes[imgIndex].cloneNode(true);
+                    var block = document.createElement('div');
+                    block.style.backgroundImage = img;
+                    block.style.backgroundSize = "190px 200px";
+                    block.className = 'block';
+                    block.appendChild(img);
+                    row.appendChild(block);
+                }
+            }
+
+            container.appendChild(row);
+        }
         for (var i = 0; i < numRows; i++) {
             var row = document.createElement('div');
             row.className = 'row';
