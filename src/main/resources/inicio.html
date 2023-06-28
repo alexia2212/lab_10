@@ -14,8 +14,10 @@
 <input type="file" id="inputFile" accept="image/png" multiple>
 
 <button id="loadImagesButton">Cargar imágenes</button>
-<div id="imageContainer">
-</div>
+<div id="imageContainer"></div>
+
+<button onclick="generarCuadro()">Agregar Tablero</button>
+<div id="container"></div>
 
 <style>
     .thumbnail {
@@ -23,7 +25,74 @@
         max-height: 200px;
         margin: 10px;
     }
+    .block {
+
+        background-color: #49BCD4;
+        border: 1px solid black;
+        width: 200px;
+        height: 200px;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
 </style>
+<script>
+    function generarCuadro() {
+        var imagenes = document.getElementById('imageContainer').getElementsByTagName('img');
+        var numImagenes = imagenes.length;
+
+        var numCols = 3; // Número de columnas deseado
+        var numRows = Math.ceil(numImagenes / numCols); // Calcular el número de filas
+
+        var container = document.getElementById('container');
+        container.innerHTML = ''; // Limpiar el contenido actual
+
+        for (var i = 0; i < numRows; i++) {
+            var row = document.createElement('div');
+            row.className = 'row';
+
+            for (var j = 0; j < numCols; j++) {
+                var imgIndex = i * numCols + j;
+                if (imgIndex < numImagenes) {
+                    var img = imagenes[imgIndex].cloneNode(true);
+                    var block = document.createElement('div');
+                    block.style.backgroundImage = img;
+                    block.style.backgroundSize = "190px 200px";
+                    block.className = 'block';
+                    block.appendChild(img);
+                    row.appendChild(block);
+                }
+            }
+
+            container.appendChild(row);
+        }
+    }
+</script>
+<script>
+    function generarBloques() {
+        var numImagenes = document.getElementById('imageContainer').children.length; //6
+        var numColumnas = 3; // Número de columnas deseado
+        var numFilas = Math.ceil(numImagenes*2 / numColumnas); // 4
+
+        var container = document.getElementById('bloque');
+        container.innerHTML = ''; // Limpiar el contenido actual
+
+        for (var i = 0; i < numFilas; i++) {
+            var row = document.createElement('div');
+            row.className = 'row';
+
+            for (var j = 0; j < numColumnas; j++) {
+                var imgIndex = i * numColumnas + j;
+                if (imgIndex < numImagenes) {
+                    var bloque = document.createElement("imgIndex");
+                    bloque.className = "bloque";
+                    row.appendChild(bloque);
+                }
+            }
+
+            container.appendChild(row);
+        }
+    }
+</script>
 
 
 <script>

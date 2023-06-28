@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Juego de la memoria</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .bloque {
+
+            background-color: #49BCD4;
+            border: 1px solid black;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+         .block {
+             width: 50px;
+             height: 50px;
+             background-color: gray;
+             margin: 5px;
+             display: inline-block;
+         }
+    </style>
+    <script>
+        function validar() {
+            var imagen = document.getElementById("myFile").value.trim();
+            if (imagen>15){
+                var errorMessage = document.getElementById("error-message");
+                errorMessage.style.display = "block";
+                errorMessage.innerHTML = "Solo se aceptan 15 imagenes como maximo";
+                return false;
+            }
+
+            if ((imagen <= 15) ) {
+                var contenedor = document.getElementById("bloque");
+
+                while (contenedor.firstChild) {
+                    contenedor.removeChild(contenedor.firstChild);
+                }
+                // cant bloques
+                for (var i = 0; i < imagen; i++) {
+                    var bloque = document.createElement("div");
+                    bloque.style.backgroundImage = "url('./img/robot.png')";
+                    bloque.style.backgroundSize = "190px 200px";
+                    bloque.className = "bloque";
+                    contenedor.appendChild(bloque);
+                }
+            }
+
+
+            return true;
+        }
+    </script>
+    <script>
+        function agregarImagen() {
+            var imgContainer = document.getElementById('imgContainer');
+            var img = document.createElement('img');
+            img.src = 'ruta_imagen.jpg'; // Ruta de la imagen a agregar
+            imgContainer.appendChild(img);
+
+            var imagen = document.getElementById("imgContainer").value.trim();
+            if (imagen>15){
+                var errorMessage = document.getElementById("error-message");
+                errorMessage.style.display = "block";
+                errorMessage.innerHTML = "Solo se aceptan 15 imagenes como maximo";
+                return false;
+            }
+
+        }
+
+        function generarBloquesss() {
+            var numImagenes = document.getElementById('imgContainer').children.length; //6
+            var numColumnas = 3; // Número de columnas deseado
+            var numFilas = Math.ceil(numImagenes / numColumnas); // Calcular el número de filas
+
+            var container = document.getElementById('bloque');
+            container.innerHTML = ''; // Limpiar el contenido actual
+
+            for (var i = 0; i < numFilas; i++) {
+                var row = document.createElement('div');
+                row.className = 'row';
+
+                for (var j = 0; j < numColumnas; j++) {
+                    var imgIndex = i * numColumnas + j;
+                    if (imgIndex < numImagenes) {
+                        var img = document.getElementById('imgContainer').children[imgIndex].cloneNode(true);
+                        row.appendChild(img);
+                    }
+                }
+
+                container.appendChild(row);
+            }
+        }
+    </script>
+</head>
+<body>
+
+
+    <h1>Generar bloques en filas y columnas</h1>
+    <button onclick="agregarImagen()">Agregar imagen</button>
+    <div id="imgContainer"></div>
+    <button onclick="generarBloques()">Agregar Tablero</button>
+    <div id="bloque"></div>
+    <script>
+        function generarBloques() {
+            var numImagenes = document.getElementById('imgContainer').children.length; //6
+            var numColumnas = 3; // Número de columnas deseado
+            var numFilas = Math.ceil(numImagenes*2 / numColumnas); // 4
+
+            var container = document.getElementById('bloque');
+            container.innerHTML = ''; // Limpiar el contenido actual
+
+            for (var i = 0; i < numFilas; i++) {
+                var row = document.createElement('div');
+                row.className = 'row';
+
+                for (var j = 0; j < numColumnas; j++) {
+                    var imgIndex = i * numColumnas + j;
+                    if (imgIndex < numImagenes) {
+                        var bloque = document.createElement("imgIndex");
+                        bloque.className = "bloque";
+                        row.appendChild(bloque);
+
+                    }
+                }
+
+                container.appendChild(row);
+            }
+        }
+    </script>
+
+
+
+</body>
+</html>
+
+
