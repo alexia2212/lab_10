@@ -1,3 +1,12 @@
+const startButton = document.getElementById("start");
+const gameContainer = document.querySelector(".game-container");
+const result = document.getElementById("result");
+const controls = document.querySelector(".controls-container");
+let cards;
+let interval;
+let firstCard = false;
+let secondCard = false;
+
 const items = [
     { name: "bee", image: "Abra.png" },
     { name: "crocodile", image: "Aerodactyl.png" },
@@ -15,7 +24,7 @@ const items = [
     { name: "toucan", image: "Charmander.png" },
 
 ];
-//Pick random objects from the items array
+//Escoge objetos/cartas random
 const generateRandom = (size = 4) => {
     //temporary array
     let tempArray = [...items];
@@ -52,10 +61,9 @@ const matrixGenerator = (cardValues, size = 4) => {
      </div>
      `;
     }
-    //Grid
     gameContainer.style.gridTemplateColumns = `repeat(${size},auto)`;
 
-    //Cards
+    //Cartas
     cards = document.querySelectorAll(".card-container");
     cards.forEach((card) => {
         card.addEventListener("click", () => {
@@ -105,7 +113,7 @@ const matrixGenerator = (cardValues, size = 4) => {
         });
     });
 };
-//Start game
+//Inicio de Juego
 startButton.addEventListener("click", () => {
     movesCount = 0;
     seconds = 0;
@@ -120,7 +128,7 @@ startButton.addEventListener("click", () => {
     moves.innerHTML = `<span>Moves:</span> ${movesCount}`;
     initializer();
 });
-//Initialize values and func calls
+//Inicializando
 const initializer = () => {
     result.innerText = "";
     winCount = 0;
