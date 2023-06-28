@@ -15,7 +15,10 @@
 
 <button id="loadImagesButton">Cargar imágenes</button>
 <div id="imageContainer">
+    <div id="gameBoard"></div>
 </div>
+
+
 
 <style>
     .thumbnail {
@@ -23,7 +26,53 @@
         max-height: 150px;
         margin: 10px;
     }
+    .card {
+         width: 100px;
+         height: 100px;
+         margin: 5px;
+         background-color: gray;
+     }
+
 </style>
+
+<script>
+    document.getElementById('loadImagesButton').addEventListener('click', loadImages);
+
+    function loadImages() {
+        var filesInput = document.getElementById('inputFile');
+        var files = filesInput.files;
+
+        if (files.length !== 6) {
+            alert('Debes seleccionar exactamente 6 imágenes.');
+            return;
+        }
+
+        var gameBoard = document.getElementById('gameBoard');
+        gameBoard.innerHTML = '';
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            if (!file.type.match('image/png')) {
+                alert('Debes seleccionar imágenes en formato PNG.');
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = (function (aFile) {
+                return function (e) {
+                    var img = document.createElement('img');
+                    img.classList.add('card');
+                    img.src = e.target.result;
+                    gameBoard.appendChild(img);
+                };
+            })(file);
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+</script>
 
 
 <script>
@@ -77,6 +126,7 @@
         imageCount.textContent = parseInt(imageCount.textContent) - 1;
         imageContainer.parentNode.removeChild(imageContainer);
     }
+
 </script>
 </body>
 </html>
