@@ -9,17 +9,18 @@
 
 <h1>El Juego de la Memoria</h1>
 
-<h5>Total de imágenes seleccionadas: <span id="imageCount"> </span></h5>
+<h5>Total de imágenes seleccionadas: <span id="imageCount">0</span></h5>
 
+<input type="file" id="inputFile" accept="image/png" multiple>
 
-<input type="file" id="inputFile" accept="image/*" multiple>
 <button id="loadImagesButton">Cargar imágenes</button>
-<div id="imageContainer"></div>
+<div id="imageContainer">
+</div>
 
 <style>
     .thumbnail {
-        max-width: 200px; /* Ajusta el ancho máximo */
-        max-height: 200px; /* Ajusta la altura máxima */
+        max-width: 200px;
+        max-height: 200px;
         margin: 10px;
     }
 </style>
@@ -44,25 +45,38 @@
             var reader = new FileReader();
             reader.onload = (function (aFile) {
                 return function (e) {
+                    var imgContainer = document.createElement('div');
+                    imgContainer.classList.add('image-item');
+
+                    var closeButton = document.createElement('span');
+                    closeButton.classList.add('close-button', 'w3-button', 'w3-display-topright');
+                    closeButton.innerHTML = '&times;';
+                    closeButton.onclick = function() {
+                        deleteImage(imgContainer);
+                    };
+
                     var img = document.createElement('img');
                     img.classList.add('thumbnail');
                     img.src = e.target.result;
-                    imageContainer.appendChild(img);
+
+                    imgContainer.appendChild(closeButton);
+                    imgContainer.appendChild(img);
+                    imageContainer.appendChild(imgContainer);
                 };
             })(file);
 
             reader.readAsDataURL(file);
+
+            var imageCount = document.getElementById('imageCount');
+            imageCount.textContent = parseInt(imageCount.textContent) + 1;
         }
     }
 
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('close-button')) {
-            var imageContainer = e.target.parentNode;
-            var imageCount = document.getElementById('imageCount');
-            imageCount.textContent = parseInt(imageCount.textContent) - 1;
-            imageContainer.parentNode.removeChild(imageContainer);
-        }
-    });
+    function deleteImage(imageContainer) {
+        var imageCount = document.getElementById('imageCount');
+        imageCount.textContent = parseInt(imageCount.textContent) - 1;
+        imageContainer.parentNode.removeChild(imageContainer);
+    }
 </script>
 </body>
 </html>
