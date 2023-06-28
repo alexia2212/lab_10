@@ -19,8 +19,8 @@
 
 <style>
     .thumbnail {
-        max-width: 150px;
-        max-height: 150px;
+        max-width: 200px;
+        max-height: 200px;
         margin: 10px;
     }
 </style>
@@ -34,6 +34,12 @@
         var filesInput = document.getElementById('inputFile');
         var files = filesInput.files;
         var imageContainer = document.getElementById('imageContainer');
+        var imageCount = document.getElementById('imageCount');
+
+        if (imageCount.textContent >= 15) {
+            alert('Solo se aceptan 15 imágenes');
+            return;
+        }
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
@@ -62,13 +68,11 @@
                     imgContainer.appendChild(closeButton);
                     imgContainer.appendChild(img);
                     imageContainer.appendChild(imgContainer);
+                    imageCount.textContent = parseInt(imageCount.textContent) + 1;
                 };
             })(file);
 
             reader.readAsDataURL(file);
-
-            var imageCount = document.getElementById('imageCount');
-            imageCount.textContent = parseInt(imageCount.textContent) + 1;
         }
     }
 
