@@ -189,7 +189,47 @@
     }
 
 </script>
-<script src="juego.js"></script>
+<script>
+    document.getElementById('Aleatorizar').addEventListener('click', aleatorizar);
+
+    function aleatorizar() {
+        var blocks = document.getElementsByClassName('block');
+        var imageArray = [];
+
+        for (var i = 0; i < blocks.length; i++) {
+            var block = blocks[i];
+            var img = block.getElementsByTagName('img')[0];
+            imageArray.push(img);
+        }
+
+        shuffleArray(imageArray); // Aleatorizar las imágenes
+
+        for (var i = 0; i < blocks.length; i++) {
+            var block = blocks[i];
+            var img = imageArray[i].cloneNode(true);
+            block.innerHTML = '';
+            block.style.backgroundImage = 'url(' + img.src + ')';
+            block.appendChild(img);
+        }
+    }
+
+    function shuffleArray(array) {
+        var currentIndex = array.length;
+        var temporaryValue, randomIndex;
+
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
+</script>
 
 </body>
 </html>
