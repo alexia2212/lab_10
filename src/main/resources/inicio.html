@@ -7,57 +7,66 @@
 </head>
 <body>
 
-    <h1>El Juego de la Memoria</h1>
+<h1>El Juego de la Memoria</h1>
 
-    <h5>Total de imágenes seleccionadas: </h5>
+<h5>Total de imágenes seleccionadas: <span id="imageCount">0</span></h5>
 
+<form id="myForm">
+    <input type="file" id="myFile" name="myFile">
+    <button type="submit" class="btn btn-success">Subir imagen</button>
+</form>
 
-    <form id="myForm">
-        <input type="file" id="myFile" name="myFile">
-        <button type="submit" class="btn btn-success">Subir imagen</button>
-    </form>
-        <div id="imageContainer">
-            <span class="close-button w3-button w3-display-topright">&times;</span>
-        </div>
+<div id="imageContainer"></div>
 
+<script>
+    document.getElementById('myForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    <script>
-        document.getElementById('myForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var fileInput = document.getElementById('myFile');
-            var file = fileInput.files[0];
+        var fileInput = document.getElementById('myFile');
+        var file = fileInput.files[0];
 
-            var formData = new FormData();
-            formData.append('image', file);
+        var formData = new FormData();
+        formData.append('image', file);
 
-            fetch('/http://localhost:63342/lab_10/demo/inicio.html?_ijt=9c68rn0pnuthedetlknrl0ks13&_ij_reload=RELOAD_ON_SAVE', {
-                method: 'POST',
-                body: formData
+        fetch('', {
+            method: 'POST',
+            body: formData
+        })
+            .then(function(response) {
+                return response.blob();
             })
-                .then(function(response) {
-                    return response.blob(); // Obtener los datos de la respuesta como un objeto Blob
-                })
-                .then(function(blob) {
-                    var imageUrl = URL.createObjectURL(blob);
+            .then(function(blob) {
+                var imageUrl = URL.createObjectURL(blob);
 
+                var img = document.createElement('img');
+                img.src = imageUrl;
 
-                    var img = document.createElement('img');
-                    img.src = imageUrl;
+                var closeBtn = document.createElement('span');
+                closeBtn.className = 'close-button w3-button w3-display-topright';
+                closeBtn.innerHTML = '&times;';
 
-                    var imageContainer = document.getElementById('imageContainer');
-                    imageContainer.appendChild(img);
+                var imageContainer = document.getElementById('imageContainer');
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(closeBtn);
 
-                    URL.revokeObjectURL(imageUrl);
-                })
-                .catch(function(error) {
-                    console.error('Error al subir la imagen', error);
-                });
-        });
+                var imageCount = document.getElementById('imageCount');
+                imageCount.textContent = parseInt(imageCount.textContent) + 1;
 
-    </script>
+                URL.revokeObjectURL(imageUrl);
+            })
+            .catch(function(error) {
+                console.error('Error al subir la imagen', error);
+            });
+    });
 
-
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('close-button')) {
+            var imageContainer = e.target.parentNode;
+            var imageCount = document.getElementById('imageCount');
+            imageCount.textContent = parseInt(imageCount.textContent) - 1;
+            imageContainer.parentNode.removeChild(imageContainer);
+        }
+    });
+</script>
 </body>
 </html>
-
-
