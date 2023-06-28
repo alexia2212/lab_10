@@ -9,61 +9,51 @@
 
 <h1>El Juego de la Memoria</h1>
 
-<h5>Total de imágenes seleccionadas: <span id="imageCount">0</span></h5>
+<h5>Total de imágenes seleccionadas: <span id="imageCount"> </span></h5>
 
-<form id="myForm">
-    <input type="file" id="myFile" name="myFile" accept="image/png">
-    <button type="submit" class="btn btn-success">Subir imagen</button>
-</form>
 
+<input type="file" id="inputFile" accept="image/*" multiple>
+<button id="loadImagesButton">Cargar imágenes</button>
 <div id="imageContainer"></div>
 
+<style>
+    .thumbnail {
+        max-width: 200px; /* Ajusta el ancho máximo */
+        max-height: 200px; /* Ajusta la altura máxima */
+        margin: 10px;
+    }
+</style>
+
+
 <script>
-    document.getElementById('myForm').addEventListener('submit', function(e) {
-        e.preventDefault();
 
-        var fileInput = document.getElementById('myFile');
-        var file = fileInput.files[0];
+    document.getElementById('loadImagesButton').addEventListener('click', loadImages);
 
-        if (!file || file.type !== 'image/png') {
-            console.error('Se aceptan solo archivos png.');
-            return;
+    function loadImages() {
+        var filesInput = document.getElementById('inputFile');
+        var files = filesInput.files;
+        var imageContainer = document.getElementById('imageContainer');
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            if (!file.type.match('image.*')) {
+                continue;
+            }
+
+            var reader = new FileReader();
+            reader.onload = (function (aFile) {
+                return function (e) {
+                    var img = document.createElement('img');
+                    img.classList.add('thumbnail');
+                    img.src = e.target.result;
+                    imageContainer.appendChild(img);
+                };
+            })(file);
+
+            reader.readAsDataURL(file);
         }
-
-        var formData = new FormData();
-        formData.append('image', file);
-
-        fetch('/http://localhost:8080', {
-            method: 'POST',
-            body: formData
-        })
-            .then(function(response) {
-                return response.blob();
-            })
-            .then(function(blob) {
-                var imageUrl = URL.createObjectURL(blob);
-
-                var img = document.createElement('img');
-                img.src = imageUrl;
-
-                var closeBtn = document.createElement('span');
-                closeBtn.className = 'close-button w3-button w3-display-topright';
-                closeBtn.innerHTML = '&times;';
-
-                var imageContainer = document.getElementById('imageContainer');
-                imageContainer.appendChild(img);
-                imageContainer.appendChild(closeBtn);
-
-                // Incrementar el contador de imágenes
-                var imageCount = document.getElementById('imageCount');
-                imageCount.textContent = parseInt(imageCount.textContent) + 1;
-
-                URL.revokeObjectURL(imageUrl);
-            })
-            .catch(function(error) {
-                console.error('Error al subir la imagen', error);
-            });
-    });
+    }
 
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('close-button')) {
