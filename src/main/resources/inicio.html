@@ -10,8 +10,8 @@
         .block {
             background-color: #49BCD4;
             border: 1px solid black;
-            width: 250px;
-            height: 250px;
+            width: 100px;
+            height: 100px;
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
@@ -48,9 +48,13 @@
 <div id="imageContainer">
     <div id="gameBoard"></div>
 </div>
+<br>
+<br>
 
 <button onclick="generarCuadro()">Agregar Tablero</button>
 <div id="container"></div>
+<br>
+<br>
 
 <button id="Aleatorizar" type="button" class="btn btn-danger">Aleatorizar</button>
 
@@ -184,6 +188,44 @@
 
         return array;
     }
+    function flipCard(card){
+        var gameBoard = document.getElementById("gameBoard");
+        var cards = [];
+        var flippedCards = [];
+        var matches = 0;
+        var totalMatches = cardImages.length;
+        var shuffleCount = 0;
+        var helpCount = 2;
+
+        document.getElementById("helpButton").addEventListener("click", function () {
+            if (helpCount > 0) {
+                var unmatchedFlippedCards = flippedCards.filter(function (card) {
+                    return !card.classList.contains("matched");
+                });
+                if (unmatchedFlippedCards.length > 0) {
+                    var randomIndex = Math.floor(Math.random() * unmatchedFlippedCards.length);
+                    var randomCard = unmatchedFlippedCards[randomIndex];
+                    var image = randomCard.dataset.image;
+                    var matchingCard = cards.find(function (card) {
+                        return card.dataset.image === image && card !== randomCard;
+                    });
+                    if (matchingCard) {
+                        flipCard(randomCard);
+                        flipCard(matchingCard);
+                        helpCount--;
+                        if (helpCount === 0) {
+                            document.getElementById("helpButton").disabled = true;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
+
 </script>
 </body>
 
