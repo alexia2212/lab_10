@@ -198,10 +198,11 @@
 
     function flipCard(card) {
         if (!card.classList.contains("matched") && flippedCards.length < 2) {
-            card.classList.toggle("flipped");
+            card.classList.add("flipped");
             var img = card.querySelector("img");
-            img.style.display = img.style.display === "none" ? "block" : "none";
-
+            img.style.display = "none";
+            var backImage = card.querySelector(".back-image");
+            backImage.style.display = "block";
             flippedCards.push(card);
 
             if (flippedCards.length === 2) {
