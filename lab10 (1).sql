@@ -74,6 +74,8 @@ CREATE TABLE `juego_has_imagenes` (
   `idjuego` int NOT NULL,
   `idimagenes` int NOT NULL,
   `posicion` varchar(45) NOT NULL,
+  `tiempo` varchar(45) NOT NULL,
+  `movimientos` varchar(45) NOT NULL,
   PRIMARY KEY (`idjuego`,`idimagenes`),
   KEY `fk_juego_has_imagenes_imagenes1_idx` (`idimagenes`),
   KEY `fk_juego_has_imagenes_juego1_idx` (`idjuego`),
@@ -125,4 +127,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-29 14:03:47
+-- Dump completed on 2023-06-29 15:20:19
