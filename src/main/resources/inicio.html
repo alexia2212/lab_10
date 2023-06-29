@@ -46,47 +46,45 @@
 
 <button id="Aleatorizar" type="button" class="btn btn-danger">Aleatorizar</button>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function generarCuadro() {
-        var imagenes = document.getElementById('imageContainer').getElementsByTagName('img');
+        var imagenes = $('#imageContainer').find('img');
         var numImagenes = imagenes.length;
 
         var numCols = 3; // Número de columnas deseado
         var numRows = Math.ceil(numImagenes / numCols); // Calcular el número de filas
 
-        var container = document.getElementById('container');
-        container.innerHTML = ''; // Limpiar el contenido actual
+        var container = $('#container');
+        container.empty(); // Limpiar el contenido actual
 
         for (var i = 0; i < numRows; i++) {
-            var row = document.createElement('div');
-            row.className = 'row';
+            var row = $('<div>').addClass('row');
 
             for (var j = 0; j < numCols; j++) {
                 var imgIndex = i * numCols + j;
                 if (imgIndex < numImagenes) {
-                    var img = imagenes[imgIndex].cloneNode(true);
-                    var block = document.createElement('div');
-                    block.style.backgroundImage = img;
-                    block.style.backgroundSize = "190px 200px";
-                    block.className = 'block';
-                    block.appendChild(img);
-                    row.appendChild(block);
+                    var img = imagenes.eq(imgIndex).clone();
+                    var block = $('<div>').addClass('block');
+                    block.css('backgroundImage', 'url(' + img.attr('src') + ')');
+                    block.append(img);
+                    row.append(block);
                 }
             }
 
-            container.appendChild(row);
+            container.append(row);
         }
     }
 
-    document.getElementById('inputFile').addEventListener('change', loadImages);
+    $('#inputFile').change(loadImages);
 
     function loadImages() {
-        var filesInput = document.getElementById('inputFile');
-        var files = filesInput.files;
-        var imageContainer = document.getElementById('imageContainer');
-        var imageCount = document.getElementById('imageCount');
+        var filesInput = $('#inputFile');
+        var files = filesInput[0].files;
+        var imageContainer = $('#imageContainer');
+        var imageCount = $('#imageCount');
 
-        if (imageCount.textContent >= 15) {
+        if (imageCount.text() >= 15) {
             alert('Solo se aceptan 15 imágenes');
             return;
         }
@@ -101,26 +99,23 @@
             var reader = new FileReader();
             reader.onload = (function (aFile) {
                 return function (e) {
-                    var imgContainer = document.createElement('div');
-                    imgContainer.classList.add('image-item');
+                    var imgContainer = $('<div>').addClass('image-item');
 
-                    var closeButton = document.createElement('span');
-                    closeButton.classList.add('close-button');
-                    closeButton.innerHTML = '&times;';
-                    closeButton.onclick = function() {
+                    var closeButton = $('<span>').addClass('close-button');
+                    closeButton.html('&times;');
+                    closeButton.click(function() {
                         deleteImage(imgContainer);
-                    };
+                    });
 
-                    var img = document.createElement('img');
-                    img.classList.add('thumbnail');
-                    img.style.width = "190px";
-                    img.style.height = "200px";
-                    img.src = e.target.result;
+                    var img = $('<img>').addClass('thumbnail');
+                    img.css('width', '190px');
+                    img.css('height', '200px');
+                    img.attr('src', e.target.result);
 
-                    imgContainer.appendChild(closeButton);
-                    imgContainer.appendChild(img);
-                    imageContainer.appendChild(imgContainer);
-                    imageCount.textContent = parseInt(imageCount.textContent) + 1;
+                    imgContainer.append(closeButton);
+                    imgContainer.append(img);
+                    imageContainer.append(imgContainer);
+                    imageCount.text(parseInt(imageCount.text()) + 1);
                 };
             })(file);
 
@@ -129,32 +124,32 @@
     }
 
     function deleteImage(imageContainer) {
-        var imageCount = document.getElementById('imageCount');
-        imageCount.textContent = parseInt(imageCount.textContent) - 1;
-        imageContainer.parentNode.removeChild(imageContainer);
+        var imageCount = $('#imageCount');
+        imageCount.text(parseInt(imageCount.text()) - 1);
+        imageContainer.remove();
     }
 
 
-    document.getElementById('Aleatorizar').addEventListener('click', aleatorizar);
+    $('#Aleatorizar').click(aleatorizar);
 
     function aleatorizar() {
-        var blocks = document.getElementsByClassName('block');
+        var blocks = $('.block');
         var imageArray = [];
 
         for (var i = 0; i < blocks.length; i++) {
-            var block = blocks[i];
-            var img = block.getElementsByTagName('img')[0];
+            var block = blocks.eq(i);
+            var img = block.find('img').eq(0);
             imageArray.push(img);
         }
 
         shuffleArray(imageArray); // Aleatorizar las imágenes
 
         for (var i = 0; i < blocks.length; i++) {
-            var block = blocks[i];
-            var img = imageArray[i].cloneNode(true);
-            block.innerHTML = '';
-            block.style.backgroundImage = 'url(' + img.src + ')';
-            block.appendChild(img);
+            var block = blocks.eq(i);
+            var img = imageArray[i].clone();
+            block.empty();
+            block.css('backgroundImage', 'url(' + img.attr('src') + ')');
+            block.append(img);
         }
     }
 

@@ -1,154 +1,164 @@
-const startButton = document.getElementById("start");
-const gameContainer = document.querySelector(".game-container");
-const result = document.getElementById("result");
-const controls = document.querySelector(".controls-container");
-let cards;
-let interval;
-let firstCard = false;
-let secondCard = false;
+const $ = require('jquery');
+global.$ = global.jQuery = $;
 
-const items = [
-    { name: "bee", image: "Abra.png" },
-    { name: "crocodile", image: "Aerodactyl.png" },
-    { name: "macaw", image: "Alakazam.png" },
-    { name: "gorilla", image: "Arbok.png" },
-    { name: "tiger", image: "Arcanine.png" },
-    { name: "monkey", image: "Beedrill.png" },
-    { name: "chameleon", image: "Bellsprout.png" },
-    { name: "piranha", image: "Blastoise.png" },
-    { name: "anaconda", image: "Bulbasaur.png" },
-    { name: "sloth", image: "Butterfree.png" },
-    { name: "cockatoo", image: "Caterpie.png" },
-    { name: "toucan", image: "Chansey.png" },
-    { name: "toucan", image: "Charizard.png" },
-    { name: "toucan", image: "Charmander.png" },
+const fs = require('fs');
+const path = require('path');
 
-];
-//Escoge objetos/cartas random
-const generateRandom = (size = 4) => {
-    //temporary array
-    let tempArray = [...items];
-    //initializes cardValues array
-    let cardValues = [];
-    //size should be double (4*4 matrix)/2 since pairs of objects would exist
-    size = (size * size) / 2;
-    //Random object selection
-    for (let i = 0; i < size; i++) {
-        const randomIndex = Math.floor(Math.random() * tempArray.length);
-        cardValues.push(tempArray[randomIndex]);
-        //once selected remove the object from temp array
-        tempArray.splice(randomIndex, 1);
-    }
-    return cardValues;
-};
-const matrixGenerator = (cardValues, size = 4) => {
-    gameContainer.innerHTML = "";
-    cardValues = [...cardValues, ...cardValues];
-    //simple shuffle
-    cardValues.sort(() => Math.random() - 0.5);
-    for (let i = 0; i < size * size; i++) {
-        /*
-            Create Cards
-            before => front side (contains question mark)
-            after => back side (contains actual image);
-            data-card-values is a custom attribute which stores the names of the cards to match later
-          */
-        gameContainer.innerHTML += `
-     <div class="card-container" data-card-value="${cardValues[i].name}">
-        <div class="card-before">?</div>
-        <div class="card-after">
-        <img src="${cardValues[i].image}" class="image"/></div>
-     </div>
-     `;
-    }
-    gameContainer.style.gridTemplateColumns = `repeat(${size},auto)`;
+function initializeGame() {
+    function generarCuadro() {
+        var imagenes = $('#imageContainer').find('img');
+        var numImagenes = imagenes.length;
 
-    //Cartas
-    cards = document.querySelectorAll(".card-container");
+        var numCols = 3; // Número de columnas deseado
+        var numRows = Math.ceil(numImagenes / numCols); // Calcular el número de filas
 
+        var container = $('#container');
+        container.html(''); // Limpiar el contenido actual
 
-    cards.forEach((card) => {
-        card.addEventListener("click", () => {
-            //If selected card is not matched yet then only run (i.e already matched card when clicked would be ignored)
-            if (!card.classList.contains("matched")) {
-                //flip the cliked card
-                card.classList.add("flipped");
-                //if it is the firstcard (!firstCard since firstCard is initially false)
-                if (!firstCard) {
-                    //so current card will become firstCard
-                    firstCard = card;
-                    //current cards value becomes firstCardValue
-                    firstCardValue = card.getAttribute("data-card-value");
-                } else {
-                    //increment moves since user selected second card
-                    movesCounter();
-                    //secondCard and value
-                    secondCard = card;
-                    let secondCardValue = card.getAttribute("data-card-value");
-                    if (firstCardValue == secondCardValue) {
-                        //if both cards match add matched class so these cards would beignored next time
-                        firstCard.classList.add("matched");
-                        secondCard.classList.add("matched");
-                        //set firstCard to false since next card would be first now
-                        firstCard = false;
-                        //winCount increment as user found a correct match
-                        winCount += 1;
-                        //check if winCount ==half of cardValues
-                        if (winCount == Math.floor(cardValues.length / 2)) {
-                            result.innerHTML = `<h2>You Won</h2>
-            <h4>Moves: ${movesCount}</h4>`;
-                            stopGame();
-                        }
-                    } else {
-                        //if the cards dont match
-                        //flip the cards back to normal
-                        let [tempFirst, tempSecond] = [firstCard, secondCard];
-                        firstCard = false;
-                        secondCard = false;
-                        let delay = setTimeout(() => {
-                            tempFirst.classList.remove("flipped");
-                            tempSecond.classList.remove("flipped");
-                        }, 900);
-                    }
+        for (var i = 0; i < numRows; i++) {
+            var row = $('<div>').addClass('row');
+
+            for (var j = 0; j < numCols; j++) {
+                var imgIndex = i * numCols + j;
+                if (imgIndex < numImagenes) {
+                    var img = $(imagenes[imgIndex]).clone();
+                    var block = $('<div>').addClass('block');
+                    block.css('background-image', 'url(' + img.attr('src') + ')');
+                    block.css('background-size', '190px 200px');
+                    block.append(img);
+                    row.append(block);
                 }
             }
-        });
-    });
-};
-//Inicio de Juego
-startButton.addEventListener("click", () => {
-    movesCount = 0;
-    seconds = 0;
-    minutes = 0;
-    controls.classList.add("hide");
-    stopButton.classList.remove("hide");
-    startButton.classList.add("hide");
-    //Start timer
-    interval = setInterval(timeGenerator, 1000);
-    //initial moves
-    moves.innerHTML = `<span>Moves:</span> ${movesCount}`;
-    initializer();
-});
-//Inicializando
-const initializer = () => {
-    result.innerText = "";
-    winCount = 0;
-    let cardValues = generateRandom();
-    console.log(cardValues);
-    matrixGenerator(cardValues);
-};
 
-$('#Aleatorizar').click(function (){
-    let arreglo=[[playerCh1,$('#haveColor1').css("background-color")],[playerCh2,$('#haveColor2').css("background-color")],[playerCh3,$('#haveColor3').css("background-color")],[playerCh4,$('#haveColor4').css("background-color")],[playerCh5,$('#haveColor5').css("background-color")]];
-    arreglo.sort(function() { return Math.random() - 0.5 });
-    for(let i=0;i<participantes;i++){
-        document.querySelector('#perso'+(i+1)).src=arreglo[i][0];
-        $('#linea'+(i+1)+' td').css("background-color", arreglo[i][1]);
-        $('.inicio'+(i+1)+'').css("background-color", "rgba(33,37,41)");
+            container.append(row);
+        }
     }
-    playerCh1= arreglo[0][0];
-    playerCh2= arreglo[1][0];
-    playerCh3= arreglo[2][0];
-    playerCh4= arreglo[3][0];
-    playerCh5= arreglo[4][0];
+
+    $('#inputFile').on('change', loadImages);
+
+    function loadImages() {
+        var filesInput = $('#inputFile')[0];
+        var files = filesInput.files;
+        var imageContainer = $('#imageContainer');
+        var imageCount = $('#imageCount');
+
+        if (imageCount.text() >= 15) {
+            alert('Solo se aceptan 15 imágenes');
+            return;
+        }
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            if (!file.type.match('image.*')) {
+                continue;
+            }
+
+            var reader = new FileReader();
+            reader.onload = (function (aFile) {
+                return function (e) {
+                    var imgContainer = $('<div>').addClass('image-item');
+
+                    var closeButton = $('<span>').addClass('close-button');
+                    closeButton.html('&times;');
+                    closeButton.on('click', function() {
+                        deleteImage(imgContainer);
+                    });
+
+                    var img = $('<img>').addClass('thumbnail');
+                    img.css('width', '190px');
+                    img.css('height', '200px');
+                    img.attr('src', e.target.result);
+
+                    imgContainer.append(closeButton);
+                    imgContainer.append(img);
+                    imageContainer.append(imgContainer);
+                    imageCount.text(parseInt(imageCount.text()) + 1);
+                };
+            })(file);
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function deleteImage(imageContainer) {
+        var imageCount = $('#imageCount');
+        imageCount.text(parseInt(imageCount.text()) - 1);
+        imageContainer.remove();
+    }
+
+    $('#Aleatorizar').on('click', aleatorizar);
+
+    function aleatorizar() {
+        var blocks = $('.block');
+        var imageArray = [];
+
+        for (var i = 0; i < blocks.length; i++) {
+            var block = $(blocks[i]);
+            var img = block.find('img').eq(0);
+            imageArray.push(img);
+        }
+
+        shuffleArray(imageArray); // Aleatorizar las imágenes
+
+        for (var i = 0; i < blocks.length; i++) {
+            var block = $(blocks[i]);
+            var img = imageArray[i].clone();
+            block.html('');
+            block.css('background-image', 'url(' + img.attr('src') + ')');
+            block.append(img);
+        }
+    }
+
+    function shuffleArray(array) {
+        var currentIndex = array.length;
+        var temporaryValue, randomIndex;
+
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+}
+
+const server = http.createServer((req, res) => {
+    if (req.url === '/') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
+            if (err) {
+                res.writeHead(404);
+                res.write('Archivo no encontrado');
+            } else {
+                res.write(data);
+            }
+            res.end();
+        });
+    } else if (req.url === '/script.js') {
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        fs.readFile(path.join(__dirname, 'script.js'), (err, data) => {
+            if (err) {
+                res.writeHead(404);
+                res.write('Archivo no encontrado');
+            } else {
+                res.write(data);
+            }
+            res.end();
+        });
+    } else {
+        res.writeHead(404);
+        res.write('Página no encontrada');
+        res.end();
+    }
 });
+
+server.listen(3000, 'localhost', () => {
+    console.log('Servidor en ejecución en http://localhost:3000/');
+});
+
+initializeGame();
