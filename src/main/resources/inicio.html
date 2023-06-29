@@ -21,6 +21,10 @@
             background-position: center;
         }
 
+        .block img {
+            display: none;
+        }
+
         .image-item {
             position: relative;
             display: inline-block;
@@ -193,10 +197,11 @@
     }
 
     function flipCard(card) {
-
-
         if (!card.classList.contains("matched") && flippedCards.length < 2) {
-            card.classList.add("flipped");
+            card.classList.toggle("flipped");
+            var img = card.querySelector("img");
+            img.style.display = img.style.display === "none" ? "block" : "none";
+
             flippedCards.push(card);
 
             if (flippedCards.length === 2) {
@@ -204,22 +209,22 @@
                 var image2 = flippedCards[1].dataset.image;
 
                 if (image1 === image2) {
-                    // Las cartas son iguales, se marcan como "matched"
+                    // Las imágenes coinciden, se marcan como "matched"
                     flippedCards.forEach(function (flippedCard) {
                         flippedCard.classList.add("matched");
                     });
 
-                    matches++;
-                    if (matches === totalMatches) {
-                        alert("¡Has ganado el juego!");
-                    }
+                    flippedCards = []; // Reiniciar el arreglo de cartas volteadas
                 } else {
-                    // Las cartas son diferentes, se voltean de nuevo después de un breve tiempo
+                    // Las imágenes no coinciden, se vuelven a voltear después de un breve tiempo
                     setTimeout(function () {
                         flippedCards.forEach(function (flippedCard) {
                             flippedCard.classList.remove("flipped");
+                            var img = flippedCard.querySelector("img");
+                            img.style.display = "none";
                         });
-                        flippedCards = [];
+
+                        flippedCards = []; // Reiniciar el arreglo de cartas volteadas
                     }, 1000);
                 }
             }
