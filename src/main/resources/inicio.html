@@ -4,46 +4,48 @@
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <title>Juego de la memoria</title>
+    <style>
+        .block {
+            background-color: #49BCD4;
+            border: 1px solid black;
+            width: 250px;
+            height: 250px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .image-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-
 <h1>El Juego de la Memoria</h1>
 
 <h5>Total de imágenes seleccionadas: <span id="imageCount">0</span></h5>
 
-<input type="file" id="inputFile" accept="image/png" multiple>
+<label for="inputFile" class="btn btn-success">Cargar imágenes</label>
+<input type="file" id="inputFile" accept="image/png" multiple style="display: none">
 
-<button id="loadImagesButton">Cargar imágenes</button>
 <div id="imageContainer">
     <div id="gameBoard"></div>
 </div>
+
 <button onclick="generarCuadro()">Agregar Tablero</button>
 <div id="container"></div>
+
 <button id="Aleatorizar" type="button" class="btn btn-danger">Aleatorizar</button>
 
-<style>
-    .thumbnail {
-        max-width: 200px;
-        max-height: 200px;
-        margin: 10px;
-    }
-    .card {
-         width: 100px;
-         height: 100px;
-         margin: 5px;
-         background-color: gray;
-     }
-    .block {
-
-        background-color: #49BCD4;
-        border: 1px solid black;
-        width: 250px;
-        height: 250px;
-        margin-bottom: 20px;
-        display: inline-block;
-    }
-
-</style>
 <script>
     function generarCuadro() {
         var imagenes = document.getElementById('imageContainer').getElementsByTagName('img');
@@ -74,67 +76,9 @@
 
             container.appendChild(row);
         }
-        for (var i = 0; i < numRows; i++) {
-            var row = document.createElement('div');
-            row.className = 'row';
-
-            for (var j = 0; j < numCols; j++) {
-                var imgIndex = i * numCols + j;
-                if (imgIndex < numImagenes) {
-                    var img = imagenes[imgIndex].cloneNode(true);
-                    var block = document.createElement('div');
-                    block.style.backgroundImage = img;
-                    block.style.backgroundSize = "190px 200px";
-                    block.className = 'block';
-                    block.appendChild(img);
-                    row.appendChild(block);
-                }
-            }
-
-            container.appendChild(row);
-        }
-    }
-</script>
-</script>
-<script>
-    document.getElementById('loadImagesButton').addEventListener('click', loadImages);
-
-    function loadImages() {
-        var filesInput = document.getElementById('inputFile');
-        var files = filesInput.files;
-
-
-        var gameBoard = document.getElementById('gameBoard');
-        gameBoard.innerHTML = '';
-
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-
-            if (!file.type.match('image/png') && files.length<=15) {
-                alert('Debes seleccionar imágenes en formato PNG.');
-                return;
-            }
-
-            var reader = new FileReader();
-            reader.onload = (function (aFile) {
-                return function (e) {
-                    var img = document.createElement('img');
-                    img.classList.add('card');
-                    img.src = e.target.result;
-                    gameBoard.appendChild(img);
-                };
-            })(file);
-
-            reader.readAsDataURL(file);
-        }
     }
 
-</script>
-
-
-<script>
-
-    document.getElementById('loadImagesButton').addEventListener('click', loadImages);
+    document.getElementById('inputFile').addEventListener('change', loadImages);
 
     function loadImages() {
         var filesInput = document.getElementById('inputFile');
@@ -161,7 +105,7 @@
                     imgContainer.classList.add('image-item');
 
                     var closeButton = document.createElement('span');
-                    closeButton.classList.add('close-button', 'w3-button', 'w3-display-topright');
+                    closeButton.classList.add('close-button');
                     closeButton.innerHTML = '&times;';
                     closeButton.onclick = function() {
                         deleteImage(imgContainer);
@@ -169,6 +113,8 @@
 
                     var img = document.createElement('img');
                     img.classList.add('thumbnail');
+                    img.style.width = "190px";
+                    img.style.height = "200px";
                     img.src = e.target.result;
 
                     imgContainer.appendChild(closeButton);
@@ -188,8 +134,7 @@
         imageContainer.parentNode.removeChild(imageContainer);
     }
 
-</script>
-<script>
+
     document.getElementById('Aleatorizar').addEventListener('click', aleatorizar);
 
     function aleatorizar() {
@@ -228,8 +173,6 @@
 
         return array;
     }
-
 </script>
-
 </body>
 </html>
