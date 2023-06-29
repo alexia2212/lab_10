@@ -8,7 +8,7 @@
     <title>Juego de la memoria</title>
     <style>
         .block {
-            background-color: #49BCD4;
+            background-color: #7ADAEE;
             border: 1px solid black;
             width: 250px;
             height: 250px;
@@ -19,10 +19,6 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-        }
-
-        .block img {
-            display: none;
         }
 
         .image-item {
@@ -46,33 +42,39 @@
 
 <h5>Total de imágenes seleccionadas: <span id="imageCount">0</span></h5>
 
-<label for="inputFile" class="btn btn-success">Cargar imágenes</label>
+<label for="inputFile" class="btn btn-success" onclick="showButton()" >Cargar imágenes</label>
 <input type="file" id="inputFile" accept="image/png" multiple style="display: none">
 
 <div id="imageContainer">
     <div id="gameBoard"></div>
 </div>
 <br>
-<br>
 
-<button onclick="generarCuadro()">Agregar Tablero</button>
+<button class="btn btn-danger" id="start" onclick="generarCuadro()" style="display: none;">Agregar Tablero</button>
+<br>
 <div id="container"></div>
 <br>
-<br>
 
-<button id="Aleatorizar" type="button" class="btn btn-danger">Aleatorizar</button>
-<br>
-<br>
-<button id="helpButton" onclick="showHelp()" class="btn btn-danger">Ayuda</button>
+<button id="Aleatorizar" type="button" class="btn btn-danger" >Aleatorizar</button>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+    function showButton() {
+        document.getElementById('start').style.display = 'block';
+    }
+    var selectedImages = []; // Array para almacenar las imágenes seleccionadas
+
     function generarCuadro() {
         var imagenes = $('#imageContainer').find('img');
         var numImagenes = imagenes.length;
 
         var numCols = 3; // Número de columnas deseado
         var numRows = Math.ceil(numImagenes / numCols); // Calcular el número de filas
+
+        if (numCols % 2 === 0) {
+            numCols--; // Asegurar que el número de columnas sea impar
+        }
 
         var container = $('#container');
         container.empty(); // Limpiar el contenido actual
@@ -83,15 +85,19 @@
             for (var j = 0; j < numCols; j++) {
                 var imgIndex = i * numCols + j;
                 if (imgIndex < numImagenes) {
-                    var img = $('<img>').addClass('thumbnail');
-                    img.css('width', '190px');
-                    img.css('height', '200px');
-                    img.attr('src', imagenes.eq(imgIndex).attr('src'));
+                    for (var k = 0; k < 2; k++) { // Generar dos recuadros por cada imagen
+                        var img = $('<img>').addClass('thumbnail');
+                        img.css('width', '190px');
+                        img.css('height', '200px');
+                        img.attr('src', imagenes.eq(imgIndex).attr('src'));
 
-                    var block = $('<div>').addClass('block');
-                    block.css('backgroundImage', 'url(' + img.attr('src') + ')');
-                    block.append(img);
-                    row.append(block);
+                        var block = $('<div>').addClass('block');
+                        block.css('backgroundImage', 'url(' + img.attr('src') + ')');
+                        block.append(img);
+                        block.data('index', imgIndex); // Almacenar el índice de la imagen asociada al bloque
+                        block.click(onBlockClick); // Agregar el evento de clic al bloque
+                        row.append(block);
+                    }
                 }
             }
 
@@ -152,6 +158,39 @@
         imageContainer.remove();
     }
 
+    var clicks = 0; // Variable para realizar un seguimiento del número de clics realizados
+    var firstBlock = null; // Variable para almacenar el primer bloque clicado
+
+    function onBlockClick() {
+        if (clicks === 0) {
+            firstBlock = $(this);
+            firstBlock.css('pointer-events', 'none'); // Deshabilitar clics en el primer bloque
+            clicks++;
+        } else if (clicks === 1) {
+            var secondBlock = $(this);
+            if (secondBlock[0] !== firstBlock[0]) {
+                secondBlock.css('pointer-events', 'none'); // Deshabilitar clics en el segundo bloque
+                clicks = 0;
+
+                // Comprobar si las imágenes coinciden
+                if (firstBlock.data('index') === secondBlock.data('index')) {
+                    setTimeout(function () {
+                        firstBlock.fadeOut(400, function () {
+                            firstBlock.remove();
+                        });
+                        secondBlock.fadeOut(400, function () {
+                            secondBlock.remove();
+                        });
+                    }, 500);
+                } else {
+                    setTimeout(function () {
+                        firstBlock.css('pointer-events', 'auto'); // Habilitar clics nuevamente
+                        secondBlock.css('pointer-events', 'auto'); // Habilitar clics nuevamente
+                    }, 500);
+                }
+            }
+        }
+    }
 
     $('#Aleatorizar').click(aleatorizar);
 
@@ -195,73 +234,6 @@
 
         return array;
     }
-
-    function flipCard(card) {
-        if (!card.classList.contains("matched") && flippedCards.length < 2) {
-            card.classList.add("flipped");
-            var img = card.querySelector("img");
-            img.style.display = "none";
-            var backImage = card.querySelector(".back-image");
-            backImage.style.display = "block";
-            flippedCards.push(card);
-
-            if (flippedCards.length === 2) {
-                var image1 = flippedCards[0].dataset.image;
-                var image2 = flippedCards[1].dataset.image;
-
-                if (image1 === image2) {
-                    // Las imágenes coinciden, se marcan como "matched"
-                    flippedCards.forEach(function (flippedCard) {
-                        flippedCard.classList.add("matched");
-                    });
-
-                    flippedCards = []; // Reiniciar el arreglo de cartas volteadas
-                } else {
-                    // Las imágenes no coinciden, se vuelven a voltear después de un breve tiempo
-                    setTimeout(function () {
-                        flippedCards.forEach(function (flippedCard) {
-                            flippedCard.classList.remove("flipped");
-                            var img = flippedCard.querySelector("img");
-                            img.style.display = "none";
-                        });
-
-                        flippedCards = []; // Reiniciar el arreglo de cartas volteadas
-                    }, 1000);
-                }
-            }
-        }
-    }
-
-
-    // Ayuda para encontrar la pareja de una imagen
-    function showHelp() {
-        if (helpCount > 0) {
-            var unmatchedFlippedCards = flippedCards.filter(function (card) {
-                return !card.classList.contains("matched");
-            });
-
-            if (unmatchedFlippedCards.length > 0) {
-                var randomIndex = Math.floor(Math.random() * unmatchedFlippedCards.length);
-                var randomCard = unmatchedFlippedCards[randomIndex];
-                var image = randomCard.dataset.image;
-                var matchingCard = flippedCards.find(function (card) {
-                    return card.dataset.image === image && card !== randomCard;
-                });
-
-                if (matchingCard) {
-                    flipCard(randomCard);
-                    flipCard(matchingCard);
-                    helpCount--;
-
-                    if (helpCount === 0) {
-                        document.getElementById("helpButton").disabled = true;
-                    }
-                }
-            }
-        }
-    }
-
-
 </script>
 </body>
 
